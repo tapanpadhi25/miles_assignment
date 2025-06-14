@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:miles_assignment/controller/login_controller.dart';
 
 import '../../controller/home_controller.dart';
+import '../../utils/custom_pop_up.dart';
 import '../../utils/global_utility.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,9 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      top: false,bottom: true,
+      top: false,
+      bottom: true,
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.blueAccent,
@@ -35,7 +37,16 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
                 onPressed: () {
-                  loginController.logout();
+                  showDialog(
+                    context: context,
+                    builder: (context) => CustomPopUp(
+                      title: 'Do you want to Logout?',
+                      onTap: () {
+                        loginController.logout();
+                        Navigator.pop(context); // Close popup after logout
+                      },
+                    ),
+                  );
                 },
                 icon: const Icon(
                   Icons.logout,
@@ -49,7 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           if (homeController.tasks.isEmpty) {
-            return  Center(child: Text("No Tasks Found",style: Theme.of(context).textTheme.titleMedium,));
+            return Center(
+                child: Text(
+              "No Tasks Found",
+              style: Theme.of(context).textTheme.titleMedium,
+            ));
           }
 
           return ListView.separated(
@@ -76,12 +91,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 10),
                       InkWell(
                         child: const Icon(Icons.delete, color: Colors.red),
-                        onTap: () =>
-                            homeController.deleteTask(task.id).then((value) {
-                          setState(() {
-                            homeController.fillForm(task);
-                          });
-                        }),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => CustomPopUp(
+                              title: 'Do you want to Delete Task?',
+                              onTap: () {
+                                homeController.deleteTask(task.id);
+                                Navigator.pop(context);
+                              },
+                            ),
+                          );
+                        }
                       ),
                     ],
                   ),
@@ -126,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       context: context,
       isScrollControlled: true,
+      showDragHandle: true,
       builder: (_) {
         return Padding(
           padding: EdgeInsets.only(
