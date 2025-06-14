@@ -3,7 +3,11 @@ class TaskModel {
   final String title;
   final String description;
 
-  TaskModel({required this.id, required this.title, required this.description});
+  TaskModel({
+    required this.id,
+    required this.title,
+    required this.description,
+  });
 
   factory TaskModel.fromMap(String id, Map<String, dynamic> data) {
     return TaskModel(
@@ -11,5 +15,12 @@ class TaskModel {
       title: data['title'] ?? '',
       description: data['description'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'description': description,
+    };
   }
 }
