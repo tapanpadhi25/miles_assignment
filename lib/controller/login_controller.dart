@@ -1,30 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:miles_assignment/screens/auth/login_screen.dart';
-import 'package:miles_assignment/utils/shared_pref_helper.dart';
 
+import '../screens/auth/login_screen.dart';
 import '../screens/home/home_screen.dart';
+import '../utils/shared_pref_helper.dart';
 
 class LoginController extends GetxController {
   static LoginController get instance => Get.find();
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   RxBool isVisible = RxBool(true);
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   Rxn<User> firebaseUser = Rxn<User>();
+
+   final FirebaseAuth auth;
+  LoginController({FirebaseAuth? auth}) : auth = auth ?? FirebaseAuth.instance;
 
   @override
   void onInit() {
     super.onInit();
-    firebaseUser.bindStream(_auth.authStateChanges());
+    firebaseUser.bindStream(auth.authStateChanges());
   }
 
-  // }======tapank@gmail.com===123456
   void register(String email, String password) async {
     try {
-      final userCredential = await _auth.createUserWithEmailAndPassword(
+      final userCredential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -36,7 +37,6 @@ class LoginController extends GetxController {
           backgroundColor: Colors.black,
           colorText: Colors.white,
         );
-
       });
       Get.back();
     } catch (e) {
@@ -50,12 +50,9 @@ class LoginController extends GetxController {
     }
   }
 
-
   void login(String email, String password) async {
     try {
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) {
+      await auth.signInWithEmailAndPassword(email: email, password: password).then((value) {
         if (value.user!.email!.isNotEmpty) {
           Get.snackbar("Login Success", "",
               snackPosition: SnackPosition.BOTTOM,
@@ -63,7 +60,6 @@ class LoginController extends GetxController {
           SharedPrefHelper.setBool("isLogin", true);
           Get.offAll(() => const HomeScreen());
         }
-        print("Login ===== $value");
       });
     } catch (e) {
       Get.snackbar("Login Failed", e.toString(),
@@ -72,7 +68,7 @@ class LoginController extends GetxController {
   }
 
   void logout() async {
-    await _auth.signOut();
+    await auth.signOut();
     Get.snackbar("Signed Out Successfully", "",
         snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.green);
     SharedPrefHelper.setBool("isLogin", false);

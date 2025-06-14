@@ -33,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text("Login", style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 16),
                 TextFormField(
+                  key: const Key('emailField'),
                   autofocus: false,
                   controller: loginController.emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -47,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  key: const Key('passwordField'),
                   autofocus: false,
                   obscureText: loginController.isVisible.value,
                   controller: loginController.passwordController,
@@ -76,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
+                    key: const Key('loginButton'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blueAccent,
                       shape: RoundedRectangleBorder(

@@ -5,6 +5,11 @@ import 'package:get/get.dart';
 import '../model/task_model.dart';
 
 class HomeController extends GetxController {
+  final FirebaseFirestore firestore;
+
+  HomeController({FirebaseFirestore? firestore})
+      : firestore = firestore ?? FirebaseFirestore.instance;
+
   final titleController = TextEditingController();
   final desController = TextEditingController();
 
@@ -12,7 +17,7 @@ class HomeController extends GetxController {
   final isSaving = false.obs;
   final tasks = <TaskModel>[].obs;
 
-  final taskRef = FirebaseFirestore.instance.collection('tasks');
+  late final taskRef = FirebaseFirestore.instance.collection('tasks');
 
   @override
   void onInit() {
